@@ -163,15 +163,13 @@ answers << fcf
 currentUnitRev  = 200
 currentUnitCOGS = 150
 discountRate    = 0.09
-salesProjection = (1..10).map { |i| 1000 * (1 + 0.12)**(i-1)}
+salesProjection = (1..10).map { |i| 1000 * (1 + 0.12)**i}
 
 currentProfits  = ([0] + salesProjection.map { |i| (currentUnitRev - currentUnitCOGS) * i }).npv(discountRate)
 
 newTechUnitCOGS = 135
-
-newTechProfits  = ([-100000] + salesProjection.map { |i| (currentUnitRev - newTechUnitCOGS) * i }).npv(discountRate)
-
 debugger
+newTechProfits  = ([-100000] + salesProjection.map { |i| (currentUnitRev - newTechUnitCOGS) * i }).npv(discountRate)
 
 answers << "The NPV is: #{newTechProfits - currentProfits}"
 
