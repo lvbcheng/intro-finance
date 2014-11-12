@@ -96,9 +96,9 @@ projectBCashFlow = [-110000000, 40000000, 80000000,  20000000]
 projectCCashFlow = [-120000000,        0, 20000000, 142000000]
 
 discountRate = 0.06
-projects = {"A"=>projectACashFlow.npv(discountRate),
-            "B"=>projectBCashFlow.npv(discountRate),
-            "C"=>projectCCashFlow.npv(discountRate)}
+projects = {:A=>projectACashFlow.npv(discountRate),
+            :B=>projectBCashFlow.npv(discountRate),
+            :C=>projectCCashFlow.npv(discountRate)}
 
 maxNPV = projects.values.max
 
