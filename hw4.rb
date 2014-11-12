@@ -8,6 +8,10 @@ answers = []
 # Question 1: (5 points) The project with the highest IRR is always the
 # project with the highest NPV.
 
+# IRRs are not even unique: say when cash flows are negative.
+# 100 111 0
+# 100 109 3
+
 answers << FALSE
 
 # Question 2: (10 points) Ann Arbor is considering offering public bus service
@@ -203,7 +207,10 @@ costStream    = [0] + (2013..2016).map {|yr| initialPerYearCost * (1 + revAndCos
 
 depreciationSchedule = [0] + [-capex/4] * 4
 
-cashFlow      = ((revenueStream.zip(costStream).map { |x,y| x + y }).zip(depreciationSchedule).map { |x,y| x + y }).map { |c| c * (1 - taxRate) }
+cashFlow      = ((revenueStream.zip(costStream).map { |x,y| x + y }).zip(depreciationSchedule).map { |x,y| x - y }).map { |c| c * (1 - taxRate) }
+
+# add back the depreciation
+cashFlow     = cashFlow.zip(depreciationSchedule).map { |x,y| x + y }
 
 cashFlow[0]   = cashFlow[0] + capex
 cashFlow[4]   = cashFlow[4] + residue
