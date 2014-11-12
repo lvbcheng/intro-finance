@@ -129,15 +129,15 @@ ar        =  6000000
 ap        =  4000000
 inventory =  4000000
 
-currRevenue = revenue * 1.08
-currCOGS    = cogs    * 1.03
-currSAGS    = sags
-cashPos     = 0
-inventory   = 0
-currAR      = ar
-currAP      = ap      * 1.30
+currRevenue   = revenue * 1.08
+currCOGS      = cogs    * 1.03
+currSAGS      = sags
+cashPos       = 0
+currInventory = inventory
+currAR        = ar
+currAP        = ap      * 1.30
 
-workingCap  = cashPos + inventory + (currAR - ar) - (currAP - ap)
+workingCap  = cashPos + (currInventory - inventory) + (currAR - ar) + (currAP - ap)
 
 fcf = currRevenue - currCOGS - currSAGS - workingCap
 
@@ -165,13 +165,13 @@ currentUnitCOGS = 150
 discountRate    = 0.09
 salesProjection = (1..10).map { |i| 1000 * (1 + 0.12)**(i-1)}
 
-currentProfits  = salesProjection.map { |i| (currentUnitRev - currentUnitCOGS) * i }.npv(discountRate)
+currentProfits  = ([0] + salesProjection.map { |i| (currentUnitRev - currentUnitCOGS) * i }).npv(discountRate)
 
 newTechUnitCOGS = 135
 
-newTechProfits  = salesProjection.map { |i| (currentUnitRev - newTechUnitCOGS) * i }.npv(discountRate)
+newTechProfits  = ([-100000] + salesProjection.map { |i| (currentUnitRev - newTechUnitCOGS) * i }).npv(discountRate)
 
-
+debugger
 
 answers << "The NPV is: #{newTechProfits - currentProfits}"
 
