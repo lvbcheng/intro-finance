@@ -17,7 +17,14 @@ loan_amount     = 500
 month4_payment  = 300
 month12_payment = 300
 r               = 0.05/12
-npv = - loan_amount + pv(month4_payment, 4, r) + pv(month12_payment, 12, r)
+
+CashFlow = [0] * 13
+
+CashFlow[0]  = -loan_amount
+CashFlow[4]  = 300
+CashFlow[12] = 300
+
+npv = CashFlow.npv(0.05/12)
 
 answers << npv
 
@@ -31,7 +38,15 @@ puts "Problem 01: #{npv}"
 # % sign. For example, if your answer is 13.97% you should enter it as 13.97
 # NOT 0.14 nor 14)
 
-trans = [-10000,300,500,1200,2000,2000,5000,5000]
+trans = [0] * 8
+trans[0] = -10000 # initial investment
+trans[1] =    300
+trans[2] =    500
+trans[3] =   1200
+trans[4] =   2000
+trans[5] =   2000
+trans[6] =   5000
+trans[7] =   5000
 
 answers << trans.irr.to_f.round(4) * 100
 
@@ -51,8 +66,6 @@ puts "Problem 02: #{trans.irr.to_f.round(4)}"
 # 5 is the first year where owning the hybrid starts being cheaper
 
 answers << 5
-
-puts "Problem 03: 5"
 
 # Problem 4: In high school Jeff often made money in the summer by mowing
 # lawns in the neighborhood. He just finished his freshman year of college
@@ -77,15 +90,12 @@ number_of_weeks = 14
 
 discount_rate = 0.1/52
 
-trans = []
+trans = [0] * 15
 
 trans[0]  = - investment
 14.times { |i| trans[i + 1] = extra_income }
 
 answers << trans.npv(discount_rate).to_f.round(2)
-
-puts "Problem 04: #{trans.npv(discount_rate).to_f.round(2)}"
-
 
 # Problem 5: Yassein is looking to refinance his home because rates have gone
 # down from when he bought his house 10 years ago. He started with a 30-year
@@ -97,7 +107,18 @@ puts "Problem 04: #{trans.npv(discount_rate).to_f.round(2)}"
 # will refinancing save Yassein? (i.e. What is the NPV of the refinancing
 # decision?)
 
-answers << -1
+# calculate how much Yassein still owes
+initialLoan   = 288000
+initialRate   = 0.065/12
+initialLoanPd = 30 * 12
+newRate       = 0.055/12
+newLoanPd     = 20 * 12 # 240 months
+closingCost   = 3500
+oldCashFlow   = [0] + [-Amortization.payment(initialLoan,initialRate,initialLoanPd)] * newLoanPd
+
+CashFlow5 = [-closingCost] + [-Amortization.payment(initialLoan,initialRate,initialLoanPd)] * newLoanPd
+
+answers << CashFlow5.npv(newRate) - oldCashFlow.npv(initialRate)
 
 # Problem 6: Chandra has the opportunity to buy a vacant lot next to several
 # commercial properties for $50,000. She plans to buy the property and spend
@@ -108,7 +129,9 @@ answers << -1
 # appropriate discount/interest rate is 10%?(Enter just the number without the
 # $ sign or a comma; round off decimals.)
 
-answers << -1
+CashFlow6 = [-110000] + [25000] * 10
+
+answers << CashFlow6.npv(0.1)
 
 # Problem 7: This question introduces you to the concept of an annuity with
 # growth. The formula is given on p.3, equation (7), of the Note on Formulae,
@@ -123,7 +146,9 @@ answers << -1
 # investments earn 7.5% per year. (Enter just the number without the $ sign or
 # a comma; round off decimals.)
 
-answers << -1
+CashFlow7 = [-1000000] + (1..20).map { |yr| 200000 * (1 + 0.03)**(yr-1) }
+
+answers << CashFlow7.npv(0.075)
 
 # Problem 8: Rebecca is 28 and considering going to graduate school so she
 # sits down to calculate whether it is worth the large sum of money. She knows
