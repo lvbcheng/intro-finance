@@ -217,7 +217,7 @@ puts [RafaelNPV, RafaelIRR].to_s
 # 9%. What is the value of the property today?(Enter just the number without
 # the $ sign or a comma; round off decimals.)
 
-CashFlow = ([42000] * 25)
+CashFlow = [0] + ([42000] * 25)
 PropertyValue = CashFlow.npv(0.09)
 
 answers << PropertyValue
