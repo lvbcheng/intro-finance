@@ -114,11 +114,15 @@ initialLoanPd = 30 * 12
 newRate       = 0.055/12
 newLoanPd     = 20 * 12 # 240 months
 closingCost   = 3500
-oldCashFlow   = [0] + [-Amortization.payment(initialLoan,initialRate,initialLoanPd)] * newLoanPd
 
-CashFlow5 = [-closingCost] + [-Amortization.payment(initialLoan,initialRate,initialLoanPd)] * newLoanPd
+initialPayment = -Amortization.payment(initialLoan,initialRate,initialLoanPd)
+remainingLoan  = ([0] + [initialPayment] * newLoanPd).npv(initialRate)
 
-answers << CashFlow5.npv(newRate) - oldCashFlow.npv(initialRate)
+oldCashFlow   = [0] + [initialPayment] * newLoanPd
+
+CashFlow5 = [closingCost] + [-Amortization.payment(remainingLoan,newRate,newLoanPd)] * newLoanPd
+SavingsArray = oldCashFlow.zip(CashFlow5).map {|x,y| x - y }
+answers << SavingsArray.npv(newRate)
 
 # Problem 6: Chandra has the opportunity to buy a vacant lot next to several
 # commercial properties for $50,000. She plans to buy the property and spend
