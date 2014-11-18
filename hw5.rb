@@ -1,19 +1,27 @@
+require 'debugger'
+require 'pv'
+require 'finance'
+include Finance
+
+answers = []
+
 # Question 1 (5 points) A pure discount (or zero-coupon) government bond has a
 # face value of $10,000 and a yield of 4.88 percent. If the current price of
 # the bond is $6,800, what is the maturity of the bond? (Recall that the
 # compounding interval for bonds is 6 months.) (Choose the closest round
 # number in years.)
 
-12 years
-6 years
-8 years
-10 years
+# Excel claims 8 years = NPer(4.88%/2,0,6800,10000)
+
+answers << Finance.nper(10000,0.0488,6800)
 
 # Question 2 (5 point) For two otherwise identical coupon bonds, the one with
 # the higher yield will have a higher price.  True False
 
+
 # Question 3 (5 points) For coupon bonds, the yield to maturity always equals
 # the coupon rate.  True False
+
 
 # Question 4 (10 points) What is the yield to maturity (YTM) of a zero coupon
 # bond with a face value of $1,000, current price of $950 and maturity of 2
