@@ -137,7 +137,7 @@ currInventory = inventory
 currAR        = ar
 currAP        = ap      * 1.30
 
-workingCap  = cashPos + (currInventory - inventory) + (currAR - ar) + (currAP - ap)
+workingCap  = cashPos + (currInventory - inventory) + (currAR - ar) - (currAP - ap)
 
 fcf = currRevenue - currCOGS - currSAGS - workingCap
 

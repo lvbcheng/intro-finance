@@ -128,8 +128,8 @@ answers << CashFlow5.npv(newRate) - oldCashFlow.npv(initialRate)
 # Alaska purchase? (Hint: Try and imagine you are in 1867 looking forward.)
 
 TaxCashFlow = (1868..2012).map { |yr| (50000000 / (1 + 0.03)**(2012-yr)) }
-CashFlow6 = [-7200000] + TaxCashFlow
-
+ForwardCashFlow = (2013..3000).map { |yr| (50000000) * (1 + 0.03)**(yr-2012) }
+CashFlow6 = [-7200000] + TaxCashFlow + ForwardCashFlow
 answers << CashFlow6.npv(0.07)
 
 # Problem 7: This question introduces you to the concept of an annuity with
@@ -221,7 +221,22 @@ PropertyValue = CashFlow.npv(0.09)
 
 answers << PropertyValue
 
-puts "Problem 10: #{PropertyValue}"
+# Problem 11: Roxanne invested $500,000 in a new business 6 years ago. The
+# business was expected to pay $8,000 each month for the next 21 years (in
+# excess of all costs). The annual cost of capital (or interest rate) for this
+# type of business was 9%. What is the value of the business today?(Enter just
+# the number without the $ sign or a comma; round off decimals.)  
+
+initialInvestment = 500000
+
+cashFlowOrig11    = [-initialInvestment] + [8000] * (21 * 12)
+
+puts "Problem 11 NPV six years ago #{cashFlowOrig11.npv(0.09/12)}"
+cashFlowToday11   = [0] + [8000] * (15 * 12)
+
+
+answers << cashFlowToday11.npv(0.09/12)
+
 
 puts "Answers to HW #3"
 answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}

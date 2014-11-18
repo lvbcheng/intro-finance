@@ -208,7 +208,6 @@ RafaelCashFlow = [-70000-275000,385000]
 RafaelNPV = RafaelCashFlow.npv(0.1).to_f.round(2)
 puts RafaelNPV
 RafaelIRR = RafaelCashFlow.irr.to_f * 100
-
 answers << [RafaelNPV, RafaelIRR].to_s
 
 puts [RafaelNPV, RafaelIRR].to_s
