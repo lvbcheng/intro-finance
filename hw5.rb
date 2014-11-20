@@ -13,15 +13,33 @@ answers = []
 
 # Excel claims 8 years = NPer(4.88%/2,0,6800,10000)
 
-answers << Finance.nper(10000,0.0488,6800)
+faceValue     = 10000.to_f
+currentPrice  =  6800.to_f
+sixMonthYield = 0.0488/2
+
+numberOfPeriods = Math.log(faceValue/currentPrice) / Math.log(1 + sixMonthYield)
+
+answers << (numberOfPeriods/2).round
 
 # Question 2 (5 point) For two otherwise identical coupon bonds, the one with
 # the higher yield will have a higher price.  True False
 
+answers << false
 
 # Question 3 (5 points) For coupon bonds, the yield to maturity always equals
 # the coupon rate.  True False
 
+# Yield to Maturity: the rate of return anticipated on a bond if held until
+# the maturity date.
+
+# Coupon rate: the rate of a bond on the issue date.
+
+# In fact, if:
+#   coupon rate < YTM, bond is selling at discount
+#   coupon rate = YTM, bond is selling at par
+#   coupon rate > YTM, bond is selling at premium
+
+answers << false
 
 # Question 4 (10 points) What is the yield to maturity (YTM) of a zero coupon
 # bond with a face value of $1,000, current price of $950 and maturity of 2
@@ -30,6 +48,19 @@ answers << Finance.nper(10000,0.0488,6800)
 # with no more nor less than two decimal places, and leave off the % sign. For
 # example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
 # 14) Answer for # Question 4
+
+currentPrice =  950.to_f
+faceValue    = 1000.to_f
+# zeroCouponBond = [-currentPrice,0,0,0,faceValue]
+# YTM = zeroCouponBond.irr
+
+ytm = 2 * ((10**(Math.log10(faceValue/950)/4)) - 1)
+
+# ytm = 2 * (10 **(Math.log(faceValue / currentPrice)/4) - 1)
+
+answers << ytm.to_f * 100
+
+puts ( (950 * (1 + ytm/2)**4).round == 1000)
 
 # Question 5 (10 points) The government in the U.S. issues zero-coupon bonds
 # up to one year maturity, but STRIPS are "manufactured" zero-coupon bonds
@@ -101,3 +132,6 @@ answers << Finance.nper(10000,0.0488,6800)
 # Honor Code, I (Beethoven Cheng) certify that the answers here are my own
 # work.  You cannot submit your work until you agree to the Honor
 # Code. Thanks!
+
+puts "Answers to HW #5"
+answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
