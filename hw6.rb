@@ -31,7 +31,18 @@ answers << "Becky"
 # and the equity cost of capital (also the discount rate for equity) is 15%
 # for this firm, the expected dividend (for t = 1) must be closest to: 4 3 1 2
 
-answers << "has not been attempted"
+P0   = 54
+DIV0 =  3
+P1   = 58 # estimated by analysts
+discountRate = 0.15
+DIV1 = 4
+CashFlow = [0,58+DIV1]
+CashFlow.npv(discountRate)
+
+# Since $4 gives the closest estimate for NPV of $54 given a P1 of $58,
+# DIV1 must be $4.
+
+answers << 4
 
 # Question 4 (5 points) (One period stock pricing.) Julia's Jewel Company
 # (JJC) currently has a stock price of $42 per share. If JJC's cost of equity
@@ -39,7 +50,12 @@ answers << "has not been attempted"
 # yield (DIV1/P0) is 6.25%, the expected price per share of the company in one
 # year (t = 1) is closest to?  47 43 44 46
 
-answers << "has not been attempted"
+P0   = 42
+DIV1 = 0.0625 * P0
+discountRate = 0.16
+P1 = P0 * (1+discountRate) - DIV1
+
+answers << P1.round(0)
 
 # Question 5 (10 points) Electricity for All (EFL) is preparing for their
 # Initial Public Equity Offering (IPO). Being in a highly regulated industry,
@@ -72,7 +88,14 @@ answers << FALSE
 # example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
 # 14) Answer for Question 7
 
-answers << "has not been attempted"
+discountRate   = 0.1
+DIV0           = 1
+analystGrowth  = 0.0825
+personalGrowth = 0.0875
+
+differenceInExpectation = (1/(discountRate - personalGrowth) ) - (1/(discountRate - analystGrowth))
+
+answers << differenceInExpectation.round(2)
 
 # Question 8 (15 points) GraceBook is a young firm that is in the process of
 # creating a new web-based social media platform that is focused on the
@@ -86,6 +109,11 @@ answers << "has not been attempted"
 # price per share? (Enter the answer with no more nor less than two decimal
 # places, and leave off the % sign. For example, if your answer is 13.97% you
 # should enter it as 13.97 NOT 0.14 nor 14)
+
+discountRate = 0.09
+# P0 = DIV1/(1+discountRate) + DIV2/((1+discountRate)**2) + ...
+# P0 = DIV2.((1+discountRate)**2) + DIV2 * (1+growthRate)/((1+discountRate)**3) + ...
+
 
 answers << "has not been attempted"
 
@@ -105,7 +133,14 @@ answers << "has not been attempted"
 # what is going on.) (Enter just the number without the $ sign or a comma;
 # round off decimals.)  Answer for Question 9
 
-answers << "has not been attempted"
+oneTimeInvestment = 25000000
+estimatedIncrease = 10000000
+ProjectCost = [0,-oneTimeInvestment] + [estimatedIncrease]*1000
+shareHolderCount  =  2000000
+discountRate = 0.09
+
+puts ProjectCost.npv(discountRate)
+answers << ProjectCost.npv(discountRate)/shareHolderCount
 
 # Question 10 (15 points) HigherEducation, Inc., a private educational
 # company's share price is $100 per share; earnings and dividends are $10 a
@@ -118,4 +153,13 @@ answers << "has not been attempted"
 # Price will increase by $1 per share.  Price will remain unchanged.  Price
 # will decrease by $2 per share.  Price will decrease by $1 per share.
 
-answers << "has not been attempted"
+P0   = 100
+DIV0 =  10
+discountRate = DIV0/P0
+DIV1 = DIV0/2
+DIV2 = DIV1 
+dividendIncrease = DIV0/2
+answers << "unchanged"
+
+puts "Answers to HW #6"
+answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}

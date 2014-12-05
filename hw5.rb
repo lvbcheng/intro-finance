@@ -54,7 +54,6 @@ faceValue    = 1000.to_f
 zeroCouponBond = [-currentPrice,0,0,0,faceValue]
 YTM = zeroCouponBond.irr.to_f
 
-debugger
 # ytm = 2 * ((10**(Math.log10(faceValue/950)/4)) - 1)
 
 ytm = 2 * ((1000.to_f/950.to_f)**(1/4.to_f) - 1)
@@ -94,7 +93,7 @@ faceValue    = 100000.00
 periods      = 12
 MoogleBond = [-89793] + [(interestRate/2) * faceValue] * (periods - 1) + [faceValue + faceValue * (interestRate/2)]
 
-answers << 2 * MoogleBond.irr.to_f.round(2) * 100
+answers << 2 * MoogleBond.irr.to_f * 100
 
 # Question 7 (10 points) Suppose you have $10,000 to invest in either (a) Bond
 # A, a 5-year zero-coupon; or (b) Bond B, a 10-year zero coupon bond. Both are
@@ -114,8 +113,12 @@ answers << "Bond A"
 # interest rates, is reported on an annualized basis.) (Enter just the number
 # without the $ sign or a comma, and no decimals.)  Answer for # Question 8
 
+# Since the 5% coupon bond with a face value of $1000 is being sold for $1050,
+# the question is what was the price of the bond at acquisition which must be
+# $1000 since coupon is $25 every six months (2.5% * 10000) and the face value
+# is $1000, in other words, this is a par value bond.
 
-answers << "Why is the answer not $#{1050 - 1000}?"
+answers << 50
 
 # Question 9 (15 points) Hard Spun Industries (HSI) has a project that it
 # expects will produce a cash flow of $2.5 million in 12 years. To finance the
@@ -134,7 +137,7 @@ theYield   = 0.1
 
 coupon     = 75000
 
-faceValue = 75000/(theYield/2)
+faceValue = coupon/(theYield/2)
 
 answers << faceValue
 
@@ -162,8 +165,10 @@ accrualRate  = 0.03
 discountRate = 0.10
 CashFlow = (0..(MotorsBond.size - 1)).zip(MotorsBond)
 
-FVSum = CashFlow.map {|k,v| v * (1 + accrualRate/2)**(6-k)}.inject(0) {|h,i| h = h + i }
+FVCashFlow = CashFlow.collect {|elt| elt[1]*(1+(accrualRate/2))**(6-elt[0])}
 
+FVSum = FVCashFlow.inject(0) {|h,i| h = h + i }
+debugger
 P     = FVSum/(1+discountRate/2)**6
 
 answers << P.round(2)
