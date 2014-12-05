@@ -17,6 +17,7 @@ answers << FALSE
 # company that the present value of all future earnings represents the best
 # estimate of the stocks value. Becky disagrees. Who is right?  Mandy Becky
 
+answers << "Becky"
 
 # Question 3 (5 points) (One-period pricing. Recall that since stocks have
 # really long lives, in the video we imagined owning a stock for only one
@@ -30,12 +31,15 @@ answers << FALSE
 # and the equity cost of capital (also the discount rate for equity) is 15%
 # for this firm, the expected dividend (for t = 1) must be closest to: 4 3 1 2
 
+answers << "has not been attempted"
 
 # Question 4 (5 points) (One period stock pricing.) Julia's Jewel Company
 # (JJC) currently has a stock price of $42 per share. If JJC's cost of equity
 # capital (same as discount rate for equity) is 16% and the current dividend
 # yield (DIV1/P0) is 6.25%, the expected price per share of the company in one
 # year (t = 1) is closest to?  47 43 44 46
+
+answers << "has not been attempted"
 
 # Question 5 (10 points) Electricity for All (EFL) is preparing for their
 # Initial Public Equity Offering (IPO). Being in a highly regulated industry,
@@ -45,10 +49,16 @@ answers << FALSE
 # dividend per share? (Enter just the number without the $ sign or a comma;
 # round off decimals.)
 
+returnOnEquity = 0.12
+StockPrice     = 85
+
+answers << returnOnEquity * StockPrice
 
 # Question 6 (10 points) Investments made from retained earnings that lead to
 # increases in future earnings will always increase stock price.  True.
 # False.
+
+answers << FALSE
 
 # Question 7 (15 points) You are deciding whether to add Pony Electronics to
 # your portfolio, but you are concerned about your projection for their growth
@@ -61,6 +71,8 @@ answers << FALSE
 # more nor less than two decimal places, and leave off the % sign. For
 # example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
 # 14) Answer for Question 7
+
+answers << "has not been attempted"
 
 # Question 8 (15 points) GraceBook is a young firm that is in the process of
 # creating a new web-based social media platform that is focused on the
@@ -75,6 +87,7 @@ answers << FALSE
 # places, and leave off the % sign. For example, if your answer is 13.97% you
 # should enter it as 13.97 NOT 0.14 nor 14)
 
+answers << "has not been attempted"
 
 # Question 9 (15 points) Viento Windmills is a utility that charges customers
 # for their wind generated electricity. With their current technology, they
@@ -92,6 +105,8 @@ answers << FALSE
 # what is going on.) (Enter just the number without the $ sign or a comma;
 # round off decimals.)  Answer for Question 9
 
+answers << "has not been attempted"
+
 # Question 10 (15 points) HigherEducation, Inc., a private educational
 # company's share price is $100 per share; earnings and dividends are $10 a
 # share, and the growth rate is zero. They have just announced a new growth
@@ -102,3 +117,5 @@ answers << FALSE
 # (Think carefully, draw a time line.)  Price will increase by $2 per share.
 # Price will increase by $1 per share.  Price will remain unchanged.  Price
 # will decrease by $2 per share.  Price will decrease by $1 per share.
+
+answers << "has not been attempted"

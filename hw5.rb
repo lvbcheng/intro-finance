@@ -51,16 +51,15 @@ answers << false
 
 currentPrice =  950.to_f
 faceValue    = 1000.to_f
-# zeroCouponBond = [-currentPrice,0,0,0,faceValue]
-# YTM = zeroCouponBond.irr
+zeroCouponBond = [-currentPrice,0,0,0,faceValue]
+YTM = zeroCouponBond.irr.to_f
 
-ytm = 2 * ((10**(Math.log10(faceValue/950)/4)) - 1)
+debugger
+# ytm = 2 * ((10**(Math.log10(faceValue/950)/4)) - 1)
 
-# ytm = 2 * (10 **(Math.log(faceValue / currentPrice)/4) - 1)
+ytm = 2 * ((1000.to_f/950.to_f)**(1/4.to_f) - 1)
 
 answers << ytm.to_f * 100
-
-puts ( (950 * (1 + ytm/2)**4).round == 1000)
 
 # Question 5 (10 points) The government in the U.S. issues zero-coupon bonds
 # up to one year maturity, but STRIPS are "manufactured" zero-coupon bonds
@@ -75,6 +74,11 @@ puts ( (950 * (1 + ytm/2)**4).round == 1000)
 # of a long-term STRIP will typically be higher than that of a short-term
 # STRIP."  False True
 
+# This is basically saying that the YTM of the long term STRIP must be higher
+# to compensate for the extra risk
+
+answers << true
+
 # Question 6 (10 points) Suppose Moogle, Inc. wishes to issue a bond with a
 # maturity of 6 years, a face value of $100,000 and an annual coupon rate of
 # 5% to raise $89,793. What is the yield to maturity (YTM) on this bond? (Note
@@ -85,11 +89,20 @@ puts ( (950 * (1 + ytm/2)**4).round == 1000)
 # example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
 # 14) Answer for # Question 6
 
+interestRate = 0.05
+faceValue    = 100000.00
+periods      = 12
+MoogleBond = [-89793] + [(interestRate/2) * faceValue] * (periods - 1) + [faceValue + faceValue * (interestRate/2)]
+
+answers << 2 * MoogleBond.irr.to_f.round(2) * 100
+
 # Question 7 (10 points) Suppose you have $10,000 to invest in either (a) Bond
 # A, a 5-year zero-coupon; or (b) Bond B, a 10-year zero coupon bond. Both are
 # risk free government bonds. You plan to hold the bond for a year and your
 # only objective is to take on as little interest rate risk as possible. Which
 # one should you choose?  Bond A.  Bond B.
+
+answers << "Bond A"
 
 # Question 8 (15 points) Some years ago, your aunt Megan gave you a 5% coupon
 # bond with a face value of $1,000 that had a YTM of 5% and 15 years left
@@ -100,6 +113,9 @@ puts ( (950 * (1 + ytm/2)**4).round == 1000)
 # (Recall that the compounding interval is 6 months and the YTM, like all
 # interest rates, is reported on an annualized basis.) (Enter just the number
 # without the $ sign or a comma, and no decimals.)  Answer for # Question 8
+
+
+answers << "Why is the answer not $#{1050 - 1000}?"
 
 # Question 9 (15 points) Hard Spun Industries (HSI) has a project that it
 # expects will produce a cash flow of $2.5 million in 12 years. To finance the
@@ -113,6 +129,14 @@ puts ( (950 * (1 + ytm/2)**4).round == 1000)
 # interval is 6 months and the YTM, like all interest rates, is reported on an
 # annualized basis.) (Enter just the number without the $ sign or a comma, and
 # no decimals.)  Answer for # Question 9
+
+theYield   = 0.1
+
+coupon     = 75000
+
+faceValue = 75000/(theYield/2)
+
+answers << faceValue
 
 # Question 10 (15 points) Two years ago, Motors, Inc. issued a corporate bond
 # with an annual coupon of $4,000, paid at the rate of $2,000 every six
@@ -132,6 +156,17 @@ puts ( (950 * (1 + ytm/2)**4).round == 1000)
 # Honor Code, I (Beethoven Cheng) certify that the answers here are my own
 # work.  You cannot submit your work until you agree to the Honor
 # Code. Thanks!
+
+MotorsBond   = [0] + [2000] * 5 + [2000 + 500000]
+accrualRate  = 0.03
+discountRate = 0.10
+CashFlow = (0..(MotorsBond.size - 1)).zip(MotorsBond)
+
+FVSum = CashFlow.map {|k,v| v * (1 + accrualRate/2)**(6-k)}.inject(0) {|h,i| h = h + i }
+
+P     = FVSum/(1+discountRate/2)**6
+
+answers << P.round(2)
 
 puts "Answers to HW #5"
 answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
