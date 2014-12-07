@@ -1,7 +1,7 @@
 require 'debugger'
-require 'pv'
+# require 'pv'
 require 'finance'
-include Finance
+#include Finance
 
 answers = []
 
@@ -53,6 +53,8 @@ currentPrice =  950.to_f
 faceValue    = 1000.to_f
 zeroCouponBond = [-currentPrice,0,0,0,faceValue]
 YTM = zeroCouponBond.irr.to_f
+
+puts YTM
 
 # ytm = 2 * ((10**(Math.log10(faceValue/950)/4)) - 1)
 
@@ -168,7 +170,7 @@ CashFlow = (0..(MotorsBond.size - 1)).zip(MotorsBond)
 FVCashFlow = CashFlow.collect {|elt| elt[1]*(1+(accrualRate/2))**(6-elt[0])}
 
 FVSum = FVCashFlow.inject(0) {|h,i| h = h + i }
-debugger
+
 P     = FVSum/(1+discountRate/2)**6
 
 answers << P.round(2)

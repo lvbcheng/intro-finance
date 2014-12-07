@@ -1,5 +1,5 @@
 require 'debugger'
-require 'pv'
+# require 'pv'
 require 'finance'
 include Finance
 
@@ -88,14 +88,20 @@ answers << FALSE
 # example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
 # 14) Answer for Question 7
 
-discountRate   = 0.1
 DIV0           = 1
 analystGrowth  = 0.0825
 personalGrowth = 0.0875
+r              = 0.1
 
-differenceInExpectation = (1/(discountRate - personalGrowth) ) - (1/(discountRate - analystGrowth))
+DIV1A   = DIV0 * (1 + analystGrowth)
+P0A     = DIV1A/(r - analystGrowth)
+DIV1P   = DIV0 * (1 + personalGrowth)
+P0P     = DIV1A/(r - personalGrowth)
+# debugger
 
-answers << differenceInExpectation.round(2)
+#differenceInExpectation = (1/(discountRate - personalGrowth) ) - (1/(discountRate - analystGrowth))
+
+answers << (P0P - P0A)/P0A
 
 # Question 8 (15 points) GraceBook is a young firm that is in the process of
 # creating a new web-based social media platform that is focused on the
@@ -111,11 +117,18 @@ answers << differenceInExpectation.round(2)
 # should enter it as 13.97 NOT 0.14 nor 14)
 
 discountRate = 0.09
+growthRate   = 0.03081089
+dividendStream = ([2.00]*1000).zip(0..999).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
+
+CashFlow = [-31.00,0] + dividendStream
+
+puts CashFlow.npv(discountRate)
+
 # P0 = DIV1/(1+discountRate) + DIV2/((1+discountRate)**2) + ...
 # P0 = DIV2.((1+discountRate)**2) + DIV2 * (1+growthRate)/((1+discountRate)**3) + ...
 
 
-answers << "has not been attempted"
+answers << growthRate
 
 # Question 9 (15 points) Viento Windmills is a utility that charges customers
 # for their wind generated electricity. With their current technology, they
@@ -135,12 +148,17 @@ answers << "has not been attempted"
 
 oneTimeInvestment = 25000000
 estimatedIncrease = 10000000
-ProjectCost = [0,-oneTimeInvestment] + [estimatedIncrease]*1000
-shareHolderCount  =  2000000
+ProjectCost = [0,-oneTimeInvestment] + [estimatedIncrease]*10000
+shareholderCount  =  2000000
 discountRate = 0.09
 
-puts ProjectCost.npv(discountRate)
-answers << ProjectCost.npv(discountRate)/shareHolderCount
+answers << ProjectCost.npv(discountRate)/shareholderCount
+
+CurrentStockPrice = ([0] + [25000000]*10000).npv(discountRate)/shareholderCount
+
+NewStockPrice     = ([0,0] + [35000000]*10000).npv(discountRate)/shareholderCount
+
+diffStockPrice = NewStockPrice - CurrentStockPrice
 
 # Question 10 (15 points) HigherEducation, Inc., a private educational
 # company's share price is $100 per share; earnings and dividends are $10 a
