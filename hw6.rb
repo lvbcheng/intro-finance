@@ -96,8 +96,7 @@ r              = 0.1
 DIV1A   = DIV0 * (1 + analystGrowth)
 P0A     = DIV1A/(r - analystGrowth)
 DIV1P   = DIV0 * (1 + personalGrowth)
-P0P     = DIV1A/(r - personalGrowth)
-# debugger
+P0P     = DIV1P/(r - personalGrowth)
 
 #differenceInExpectation = (1/(discountRate - personalGrowth) ) - (1/(discountRate - analystGrowth))
 
@@ -118,7 +117,7 @@ answers << (P0P - P0A)/P0A
 
 discountRate = 0.09
 growthRate   = 0.03081089
-dividendStream = ([2.00]*1000).zip(0..999).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
+dividendStream = ([2.00]*100).zip(0..99).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
 
 CashFlow = [-31.00,0] + dividendStream
 
@@ -178,6 +177,31 @@ DIV1 = DIV0/2
 DIV2 = DIV1 
 dividendIncrease = DIV0/2
 answers << "unchanged"
+
+# Question 8 Dixie Construction is a young firm that is in the process of
+# bidding (and winning) construction contracts. While they are unable to pay
+# any dividends today, once the contracts are awarded and their work begins in
+# earnest, they expect to be able to start paying a dividend of $1.50 per
+# share beginning three years from now (t = 3). From that point forward, as
+# they build their reputation and capacity, they expect to be able to increase
+# their dividend 3% each year. If Dixie's cost of equity capital is 9% (the
+# discount rate for equity), what price per share should their shares trade at
+# today? (Enter just the number without the $ sign or a comma; round off
+# decimals.)
+
+discountRate = 0.09
+growthRate   = 0.03
+dividendStream = ([1.50]*100).zip(0..99).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
+
+CashFlow = [0,0,0] + dividendStream
+
+puts CashFlow.npv(discountRate)
+
+# P0 = DIV1/(1+discountRate) + DIV2/((1+discountRate)**2) + ...
+# P0 = DIV2.((1+discountRate)**2) + DIV2 * (1+growthRate)/((1+discountRate)**3) + ...
+
+
+answers << CashFlow.npv(discountRate)
 
 puts "Answers to HW #6"
 answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
