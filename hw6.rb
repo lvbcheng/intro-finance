@@ -178,6 +178,36 @@ DIV2 = DIV1
 dividendIncrease = DIV0/2
 answers << "unchanged"
 
+# Question 4 (5 points) (One period stock pricing.) Qin's Marine Company (QMC)
+# currently has a stock price per share of $42. If QMC's cost of equity
+# capital (the discount rate for equity) is 16% and capital gains rate
+# (gain/loss in prices relative to today's price) for the next year is
+# expected to be 11%, the dividend in the upcoming year (t = 1) should be?
+
+r = 0.16
+capitalGains = 0.11
+
+P0 = 42
+P1 = (1 + capitalGains) * P0
+
+DIV1 = P0 * (1 + r) - P1
+
+puts (2.10 + P1)/(1+r)
+
+answers << DIV1
+
+# Question 5 (10 points) Locked-In Real Estate (LIRE) is preparing for their
+# Initial Public Equity Offering (IPO). With its holdings consisting of rent
+# controlled apartments, and no plans for expanding, LIRE plans to payout all
+# of its earnings as dividends. These dividends amount to $6 per share,
+# forever. If the expected rate of return is 12%, what is the stock price of
+# LIRE? (Enter just the number without the $ sign or a comma; round off
+# decimals.)
+
+LIREStockPrice = 6/0.12
+
+answers << LIREStockPrice
+
 # Question 8 Dixie Construction is a young firm that is in the process of
 # bidding (and winning) construction contracts. While they are unable to pay
 # any dividends today, once the contracts are awarded and their work begins in
@@ -191,7 +221,7 @@ answers << "unchanged"
 
 discountRate = 0.09
 growthRate   = 0.03
-dividendStream = ([1.50]*100).zip(0..99).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
+dividendStream = ([1.50]*1000).zip(0..999).collect {|elt| (elt[0].to_f) * (1 + growthRate)**elt[1]} 
 
 CashFlow = [0,0,0] + dividendStream
 
