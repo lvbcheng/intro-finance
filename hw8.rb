@@ -1,8 +1,16 @@
+require 'debugger'
+# require 'pv'
+require 'finance'
+include Finance
+
+answers = []
+
 # Question 1 (5 points) By simply increasing the number of assets (e.g.,
 # assets > 30) in any portfolio, you can diversify your exposure to
 # specific/idiosyncratic risk.  True.  False.
-
  
+answers << false
+
 # Question 2 (10 points) You have an equally-weighted portfolio that consists
 # of equity ownership in three firms. Firm X is trading at $19 per share and
 # has a beta of 1.40; Firm Y is trading at $87 per share with a beta of 2.00;
@@ -10,6 +18,15 @@
 # rate of 2.5% and market return of 8%. If each stock has a standard deviation
 # of 35% and the stocks have a correlation of 0.25 with each other, your
 # portfolio's expected return is closest to 14%.  12%.  8%.  10%.
+
+XPrice = 19
+XBeta  = 1.4
+YPrice = 87
+YBeta  = 2.0
+ZPrice = 21
+ZBeta  = 0.7
+
+answers << "Not attempted"
 
 # Question 3 (10 points) You have a portfolio that consists of equity
 # ownership in three firms. You own 400 shares of Stout Drink Company (SDC),
@@ -20,7 +37,19 @@
 # answer is 13.97% you should enter it as 13.97 NOT 0.14 nor 14) Answer for
 # Question 3
 
+SDCShares = 400
+SDCPrice  = 82
+CCShares  = 300
+CCPrice   = 46
+SFShares  = 300
+SFPrice   = 124
 
+TotalBasket = ((SDCShares * SDCPrice) + (CCShares + CCPrice) + (SFShares * SFPrice)).to_f
+SFWeight = (100 * (SFShares * SFPrice)/TotalBasket).round(2)
+
+# 52.88%
+
+answers << SFWeight
 
 # Question 4 (10 points) With everyone nervous about their investments after
 # the recent financial crisis, suppose a new firm, Safety Net Insurance (SNI),
@@ -28,6 +57,7 @@
 # exchange for an annual premium. As an investor in SNI, you would expect this
 # company's share to have a beta that is: Close to zero.  Positive.  Negative.
 
+answers << "Negative"
 
 # Question 5 (10 points) Suppose there are three securities (X, Y, and Z) to
 # choose from to create your portfolio. Next year the economy will be in an
@@ -42,6 +72,7 @@
 # Z). Which portfolio has the lowest risk?  Portfolio II.  Portfolio I.
 # Portfolio III.  Portfolio IV.
 
+answers << "Not attempted"
 
 # Question 6 (10 points) The FTSE 100 is an index of the 100 largest market
 # capitalization stocks traded on the London Stock Exchange. You think that
@@ -53,11 +84,13 @@
 # 13.97 NOT 0.14 nor 14) Answer for Question 6
 
 
+answers << "Not attempted"
+
 # Question 7 (10 points) Given the definition of beta in the context of the
 # CAPM, a stock with low beta can have more volatility (variance or standard
 # deviation) than a stock with high beta.  False.  True.
 
-
+answers << "Not attempted"
 
 # Question 8 (10 points) Suppose CAPM works, and you know that the expected
 # returns on IBM and Google are estimated to be 11% and 9.5%,
@@ -69,12 +102,14 @@
 # leave off the % sign. For example, if your answer is 13.97% you should enter
 # it as 13.97 NOT 0.14 nor 14) Answer for Question 8
 
+answers << "Not attempted"
 
 # Question 9 (10 points) The standard deviation of a portfolio's return is the
 # weighted average of the standard deviations of the returns of all securities
 # in the portfolio, where the weights are proportional to the amount of your
 # investment in a security relative to your total investment.  False.  True.
 
+answers << "Not attempted"
 
 # Question 10 (15 Points) Your own company has been very successful in
 # producing and selling rocket engines. Given that airplane engines are not
@@ -87,3 +122,8 @@
 # require a $4 billion investment, spread out equally between now (t = 0) and
 # the end of this year (t = 1), and will produce $500 million dollars in
 # perpetuity starting in year 2 (t = 2). Should you proceed with this project?
+
+answers << "Not attempted"
+
+puts "Answers to HW #8"
+answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}

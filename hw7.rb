@@ -25,6 +25,23 @@ answers << "Systemic Risk"
 # Indifferent between Y & Z.
 # Security Z.
 
+Economy1  = [0.30, 0.35, 0.35]
+SecurityX = [1.10,1.08,1.06]
+SecurityY = [1.25,1.10,0.90]
+SecurityZ = [1.075,1.075,1.075]
+
+ExpectedX = Economy1.zip(SecurityX).inject(0) { |h,i| h = i[0] * i [1] + h }
+ExpectedY = Economy1.zip(SecurityY).inject(0) { |h,i| h = i[0] * i [1] + h }
+ExpectedZ = Economy1.zip(SecurityZ).inject(0) { |h,i| h = i[0] * i [1] + h }
+
+if (ExpectedY == ExpectedZ)
+  answers << "Indifferent"
+elsif (ExpectedY > ExpectedZ)
+  answers << "Security Y"
+else
+  answers << "Security Z"
+end
+
 # Question 3 (5 points) Suppose your dear old Grandfather approaches you for
 # investment advice. He knows of your great training in finance and statistics
 # and gives the following instructions: "I have lived a long time and through
@@ -41,13 +58,28 @@ answers << "Systemic Risk"
 # Portfolio C.
 # Portfolio B.
 
+Economy1  = [0.40, 0.40, 0.20]
+PortfolioA = [1.13,1.09,1.085]
+PortfolioB = [1.10,1.09,1.05]
+PortfolioC = [1.13,1.08,1.075]
+
+Expectations = {:A=>PortfolioA.min, :B=>PortfolioB.min, :C=>PortfolioC.min}
+
+answers << "Portfolio #{Expectations.min[0]}"
+
 # Question 4 (10 points) The more idiosyncratic risk in the return of a
 # security, the larger the risk premium investors will demand.  False.  True
+
+answers << true
 
 # Question 5 (10 points) We often want to find investments that perform well
 # when other parts of our portfolio are struggling. When considering stocks to
 # add to the portfolio, those with a correlation closer to zero with our
 # existing portfolio will most effectively help us diversify.  True.  False.
+
+# We want negative correlation not zero correlation
+
+answers << false
 
 # Question 6 (10 points) As a CEO you wish to maximize the productivity of
 # your workers. You are thinking about providing your employees with
@@ -68,9 +100,13 @@ answers << "Systemic Risk"
 # Smartphone Yes; Change in Sales 130; Pete, Smartphone Yes; Change in Sales
 # 40; Angela, Smartphone No; Change in Sales 60.}  Answer for Question 6
 
+answers << "Not attempted"
+
 # Question 7 (10 points) It is well known that Investors generally do not like
 # to bear risk. For two otherwise identical corporate bonds, the one with more
 # idiosyncratic risk should have a price that is Higher.  Lower.  The same.
+
+answers << "higher"
 
 # Question 8 (15 points) Suppose your client is risk-averse but can invest in
 # only one of the three securities, X, Y, or Z, in an uncertain world
@@ -81,6 +117,8 @@ answers << "Systemic Risk"
 # Security Y {+11, +9, +8}; Security Z {+13, +8, +7.5}. Which security can you
 # rule out, that is, you will not advise your client to invest in it?  None of
 # the securities.  Security Y.  Security X.  Security Z.
+
+answers << "Not attempted"
 
 # Question 9 (15 points) You have just taken over as a fund manager at a
 # brokerage firm. Your assistant, Thomas, is briefing you on the current
@@ -95,6 +133,8 @@ answers << "Systemic Risk"
 # Current Weight 0%; Next Year's Price: Expansion 16.50, Normal 19.50,
 # Recession 12.  No.  It depends.  Yes.
 
+answers << "Not attempted"
+
 # Question 10 (15 points) Suppose there are two mortgage bankers. Banker 1 has
 # two $1,000,000 mortgages to sell. The borrowers live on opposite sides of
 # the country and face an independent probability of default of 5%, with the
@@ -107,3 +147,19 @@ answers << "Systemic Risk"
 # respective mortgages as a bundle in a mortgage-backed security (MBS) (i.e.,
 # as a portfolio). Which of the following is correct?  Banker 2's MBS has a
 # higher expected return and less risk.
+
+# The two portfolios have equal expected value but banker 2's portfolio is
+# more risky since the two mortgages are perfectly correlated.
+
+Banker1Mort = [1000000,1000000]
+Banker1PoD  = [0.05, 0.05]
+Banker1Salv = [0.4, 0.4]
+
+Banker2Mort = [1000000,1000000]
+Banker2PoD  = [0.05, 0.05]
+Banker2Salv = [0.4, 0.4]
+
+answers << "Banker 2's MBS has equal expected return and more risk"
+
+puts "Answers to HW #7"
+answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
