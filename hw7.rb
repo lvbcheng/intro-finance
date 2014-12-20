@@ -3,6 +3,27 @@ require 'debugger'
 require 'finance'
 include Finance
 
+class Array
+ def mean
+   (inject(0.to_f) { |h, i| h = h + i }/size)
+ end
+
+ def variance
+   arrayMean = mean
+   inject(0.to_f) { |h,i| h = h + (i - arrayMean)**2 }/(size - 1)
+ end
+
+ def sdev
+   (variance**0.5)
+ end
+
+ def correl(secondArray)
+   selfMean  = mean
+   otherMean = secondArray.mean
+   (zip(secondArray).inject(0) { |h,elt| h = h + ((elt[0] - selfMean) * (elt[1] - otherMean)) }/(size - 1))/(sdev*secondArray.sdev)
+ end
+end
+
 answers = []
 
 # Question 1 (5 points) Shareholders of Exxon Oil Company face a variety of
@@ -26,9 +47,9 @@ answers << "Systemic Risk"
 # Security Z.
 
 Economy1  = [0.30, 0.35, 0.35]
-SecurityX = [1.10,1.08,1.06]
-SecurityY = [1.25,1.10,0.90]
-SecurityZ = [1.075,1.075,1.075]
+SecurityX = [ 10.0, 8.0,   6.0]
+SecurityY = [ 25.0,10.0, -10.0]
+SecurityZ = [  7.5, 7.5,   7.5]
 
 ExpectedX = Economy1.zip(SecurityX).inject(0) { |h,i| h = i[0] * i [1] + h }
 ExpectedY = Economy1.zip(SecurityY).inject(0) { |h,i| h = i[0] * i [1] + h }
@@ -58,14 +79,32 @@ end
 # Portfolio C.
 # Portfolio B.
 
-Economy1  = [0.40, 0.40, 0.20]
-PortfolioA = [1.13,1.09,1.085]
-PortfolioB = [1.10,1.09,1.05]
-PortfolioC = [1.13,1.08,1.075]
+Economy3  = [0.40, 0.40, 0.20]
+PortfolioA = [ 13, 9, 8.5]
+PortfolioB = [ 10, 9, 5.0]
+PortfolioC = [ 13, 8, 7.5]
 
-Expectations = {:A=>PortfolioA.min, :B=>PortfolioB.min, :C=>PortfolioC.min}
+PortfolioAMean = Economy3.zip(PortfolioA).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+PortfolioBMean = Economy3.zip(PortfolioB).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+PortfolioCMean = Economy3.zip(PortfolioC).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
 
-answers << "Portfolio #{Expectations.min[0]}"
+PortfolioASDEV = (Economy3.zip(PortfolioA).collect { |elt| elt[0] * (elt[1] - PortfolioAMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+PortfolioBSDEV = (Economy3.zip(PortfolioB).collect { |elt| elt[0] * (elt[1] - PortfolioBMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+PortfolioCSDEV = (Economy3.zip(PortfolioC).collect { |elt| elt[0] * (elt[1] - PortfolioCMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+
+puts "Portfolio A: Mean: #{PortfolioAMean.round(2)} SDEV: #{PortfolioASDEV.round(2)} Variance: #{(PortfolioASDEV**2).round(2)}"
+puts "Portfolio B: Mean: #{PortfolioBMean.round(2)} SDEV: #{PortfolioBSDEV.round(2)} Variance: #{(PortfolioBSDEV**2).round(2)}"
+puts "Portfolio C: Mean: #{PortfolioCMean.round(2)} SDEV: #{PortfolioCSDEV.round(2)} Variance: #{(PortfolioCSDEV**2).round(2)}"
+PortfoliosStats = {:A=>[PortfolioAMean,PortfolioASDEV], 
+                   :B=>[PortfolioBMean,PortfolioBSDEV], 
+                   :C=>[PortfolioCMean,PortfolioCSDEV]}
+
+# answers << "Portfolio #{Expectations.min[0]}"
+
+# Sort the portfolios by their SDEV and return the key of the first element
+# (lowest SDEV)
+
+answers << PortfoliosStats.sort {|a,b| a[1][1] <=> b[1][1]}.first[0]
 
 # Question 4 (10 points) The more idiosyncratic risk in the return of a
 # security, the larger the risk premium investors will demand.  False.  True
@@ -100,13 +139,30 @@ answers << false
 # Smartphone Yes; Change in Sales 130; Pete, Smartphone Yes; Change in Sales
 # 40; Angela, Smartphone No; Change in Sales 60.}  Answer for Question 6
 
-answers << "Not attempted"
+employees = [{:name=>"Anthony",  :smartPhone=>1, :sales=>120},
+             {:name=>"Kira",     :smartPhone=>0, :sales=> 60},
+             {:name=>"Michael",  :smartPhone=>0, :sales=>150},
+             {:name=>"Scarlett", :smartPhone=>1, :sales=>130},
+             {:name=>"Pete",     :smartPhone=>1, :sales=> 40},
+             {:name=>"Angela",   :smartPhone=>0, :sales=> 60}]
 
-# Question 7 (10 points) It is well known that Investors generally do not like
+smartPhoneArray = employees.inject([]) { |h,i| h << i[:smartPhone] }
+salesArray      = employees.inject([]) { |h,i| h << i[:sales] }
+
+puts smartPhoneArray.to_s
+puts salesArray.to_s
+
+answers << smartPhoneArray.correl(salesArray).round(2)
+
+# Question 7 (10 points) It is well known that investors generally do not like
 # to bear risk. For two otherwise identical corporate bonds, the one with more
 # idiosyncratic risk should have a price that is Higher.  Lower.  The same.
 
-answers << "higher"
+# The face and coupons would be the same. However, the bond with the higher
+# risk would be cheaper to buy, i.e., have a higher rate of return to
+# compensate for the higher idiosyncratic risk
+
+answers << "lower"
 
 # Question 8 (15 points) Suppose your client is risk-averse but can invest in
 # only one of the three securities, X, Y, or Z, in an uncertain world
@@ -118,7 +174,44 @@ answers << "higher"
 # rule out, that is, you will not advise your client to invest in it?  None of
 # the securities.  Security Y.  Security X.  Security Z.
 
-answers << "Not attempted"
+
+Economy8  = [0.4, 0.4, 0.20]
+SecurityX = [14,10, 7]
+SecurityY = [11, 9, 8]
+SecurityZ = [13, 8, 7.5]
+
+SecurityXMean = Economy8.zip(SecurityX).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+SecurityYMean = Economy8.zip(SecurityY).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+SecurityZMean = Economy8.zip(SecurityZ).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+
+SecurityXSDEV = (Economy8.zip(SecurityX).collect { |elt| elt[0] * (elt[1] - SecurityXMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+SecurityYSDEV = (Economy8.zip(SecurityY).collect { |elt| elt[0] * (elt[1] - SecurityYMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+SecurityZSDEV = (Economy8.zip(SecurityZ).collect { |elt| elt[0] * (elt[1] - SecurityZMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+
+puts "Notes for Question 8"
+puts "Security X: Mean: #{SecurityXMean.round(2)} SDEV: #{SecurityXSDEV.round(2)} Variance: #{(SecurityXSDEV**2).round(2)}"
+puts "Security Y: Mean: #{SecurityYMean.round(2)} SDEV: #{SecurityYSDEV.round(2)} Variance: #{(SecurityYSDEV**2).round(2)}"
+puts "Security Z: Mean: #{SecurityZMean.round(2)} SDEV: #{SecurityZSDEV.round(2)} Variance: #{(SecurityZSDEV**2).round(2)}"
+
+SecuritiesStats = {:A=>[SecurityXMean,SecurityXSDEV], 
+                   :B=>[SecurityYMean,SecurityYSDEV], 
+                   :C=>[SecurityZMean,SecurityZSDEV]}
+
+# Return the portfolio with the highest standard deviation
+
+LowestReturn = SecuritiesStats.sort {|a,b| a[1][0] <=> b[1][0]}.first[0]
+PortfoliosSortedByRiskASC = SecuritiesStats.sort {|a,b| a[1][1] <=> b[1][1]}
+
+HighestRisk = PortfoliosSortedByRiskASC.last[0]
+
+# check if the portfolio with the highest risk is unique. If not, we may need
+# to look at which, among the riskiest portfolios, has the highest return
+
+if PortfoliosSortedByRiskASC[1][1][1] != PortfoliosSortedByRiskASC.last[1][1]
+  answers << HighestRisk
+else
+  answers << "None of the securities"
+end
 
 # Question 9 (15 points) You have just taken over as a fund manager at a
 # brokerage firm. Your assistant, Thomas, is briefing you on the current
@@ -133,7 +226,36 @@ answers << "Not attempted"
 # Current Weight 0%; Next Year's Price: Expansion 16.50, Normal 19.50,
 # Recession 12.  No.  It depends.  Yes.
 
-answers << "Not attempted"
+Alpha = {:currentPrice=>40.00, :currentWeight=>0.8, :futurePrice=>[48.00,44.00,36.00]}
+Beta  = {:currentPrice=>27.50, :currentWeight=>0.2, :futurePrice=>[27.50,26.00,25.00]}
+Gamma = {:currentPrice=>15.00, :currentWeight=>0.0, :futurePrice=>[16.50,19.50,12.00]}
+
+Alpha[:futurePercentage] = Alpha[:futurePrice].collect { |elt| (elt - Alpha[:currentPrice])*100/Alpha[:currentPrice]}
+Beta[:futurePercentage]  = Beta[:futurePrice].collect { |elt| (elt - Beta[:currentPrice])*100/Beta[:currentPrice]}
+Gamma[:futurePercentage] = Gamma[:futurePrice].collect { |elt| (elt - Gamma[:currentPrice])*100/Gamma[:currentPrice]}
+
+Alpha[:expectedReturn] = Alpha[:futurePercentage].mean
+Beta[:expectedReturn]  = Beta[:futurePercentage].mean
+Gamma[:expectedReturn] = Gamma[:futurePercentage].mean
+
+Alpha[:sdev] = Alpha[:futurePercentage].sdev
+Beta[:sdev]  = Beta[:futurePercentage].sdev
+Gamma[:sdev] = Gamma[:futurePercentage].sdev
+
+correl9 = {:axb=>Alpha[:futurePercentage].correl(Beta[:futurePercentage]),
+           :bxg=>Beta[:futurePercentage].correl(Gamma[:futurePercentage]),
+           :axg=>Alpha[:futurePercentage].correl(Gamma[:futurePercentage])}
+
+# if they are not perfectly correlated, either positively or negatively, we
+# need to look at the probabilities of the three different futures.
+
+if correl9[:axg] == 1
+  answers << false
+elseif correl9[:axg] == -1
+  answers << true
+else
+  answers << "It depends. correl(axg): #{correl9[:axg]}"
+end
 
 # Question 10 (15 points) Suppose there are two mortgage bankers. Banker 1 has
 # two $1,000,000 mortgages to sell. The borrowers live on opposite sides of
@@ -160,6 +282,49 @@ Banker2PoD  = [0.05, 0.05]
 Banker2Salv = [0.4, 0.4]
 
 answers << "Banker 2's MBS has equal expected return and more risk"
+
+# Extra Question 3 (5 points) Suppose your dear old Grandfather approaches you
+# for investment advice. He knows of your great training in finance and
+# statistics and gives the following instructions: "I have lived a long time
+# and through many challenges. But the recent financial upheaval, with its ups
+# and downs, is too much for me to bear. Just pick for me a portfolio with the
+# least risk." Suppose there are portfolios (A, B, and C) to choose from, and
+# next year the economy will be in an expansion, normal, or recession state
+# with probabilities 0.40, 0.40, and 0.20 respectively. The returns (%) on the
+# portfolios in these states are as follows: Portfolio A {expansion = +13,
+# normal = +9, recession = +8.5}; Portfolio B {+10,+9,+5}; Portfolio C
+# {+13,+8,+7.5}. Which investment best fits your grandfather's needs?
+
+# Portfolio A.
+# Portfolio C.
+# Portfolio B.
+
+EconomyE3  = [0.40, 0.40, 0.20]
+PortfolioA = [ 13, 9, 8.5]
+PortfolioB = [ 10, 9, 5.0]
+PortfolioC = [ 13, 8, 7.5]
+
+PortfolioAMean = EconomyE3.zip(PortfolioA).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+PortfolioBMean = EconomyE3.zip(PortfolioB).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+PortfolioCMean = EconomyE3.zip(PortfolioC).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+
+PortfolioASDEV = (EconomyE3.zip(PortfolioA).collect { |elt| elt[0] * (elt[1] - PortfolioAMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+PortfolioBSDEV = (EconomyE3.zip(PortfolioB).collect { |elt| elt[0] * (elt[1] - PortfolioBMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+PortfolioCSDEV = (EconomyE3.zip(PortfolioC).collect { |elt| elt[0] * (elt[1] - PortfolioCMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+
+puts "Portfolio A: Mean: #{PortfolioAMean.round(2)} SDEV: #{PortfolioASDEV.round(2)} Variance: #{(PortfolioASDEV**2).round(2)}"
+puts "Portfolio B: Mean: #{PortfolioBMean.round(2)} SDEV: #{PortfolioBSDEV.round(2)} Variance: #{(PortfolioBSDEV**2).round(2)}"
+puts "Portfolio C: Mean: #{PortfolioCMean.round(2)} SDEV: #{PortfolioCSDEV.round(2)} Variance: #{(PortfolioCSDEV**2).round(2)}"
+PortfoliosStats = {:A=>[PortfolioAMean,PortfolioASDEV], 
+                   :B=>[PortfolioBMean,PortfolioBSDEV], 
+                   :C=>[PortfolioCMean,PortfolioCSDEV]}
+
+# answers << "Portfolio #{Expectations.min[0]}"
+
+# Sort the portfolios by their SDEV and return the key of the first element
+# (lowest SDEV)
+
+answers << PortfoliosStats.sort {|a,b| a[1][1] <=> b[1][1]}.first[0]
 
 puts "Answers to HW #7"
 answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
