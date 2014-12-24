@@ -30,9 +30,11 @@ answers = []
 # risks in holding its shares. If the economy falters, people tend to travel
 # less and so there is less demand from the airlines industry for Exxon's
 # fuels. This type of risk that Exxon's shareholders bear is
-# Specific/Idiosyncratic Risk.  
+# - Specific/Idiosyncratic Risk
+# - Systematic/Market Risk
 
-answers << "Systemic Risk"
+
+answers << "Systematic/Market Risk"
 
 # Question 2 (5 points) Suppose there are three securities (X, Y, and Z) to
 # choose from, and next year the economy will be in an expansion, normal, or
@@ -109,7 +111,13 @@ answers << PortfoliosStats.sort {|a,b| a[1][1] <=> b[1][1]}.first[0]
 # Question 4 (10 points) The more idiosyncratic risk in the return of a
 # security, the larger the risk premium investors will demand.  False.  True
 
-answers << true
+# The risk here is the systematic risk because in theory the idiosyncratic 
+# risk can be removed.
+# Note: what I do not understand is if one holds a stock, one necessarily
+# exposes oneself to the idiosyncratic risk inherent in the stock. What then?
+# How does one mitigate the stock's idiosyncratic risk?
+
+answers << false
 
 # Question 5 (10 points) We often want to find investments that perform well
 # when other parts of our portfolio are struggling. When considering stocks to
@@ -160,9 +168,13 @@ answers << smartPhoneArray.correl(salesArray).round(2)
 
 # The face and coupons would be the same. However, the bond with the higher
 # risk would be cheaper to buy, i.e., have a higher rate of return to
-# compensate for the higher idiosyncratic risk
+# compensate for the higher risk.
 
-answers << "lower"
+# That said, the discussion forum seems to indicate that because we are using
+# CAPM, the return should be independent of idiosyncratic risk and therefore,
+# the price of the bond should be as well.
+
+answers << "the same"
 
 # Question 8 (15 points) Suppose your client is risk-averse but can invest in
 # only one of the three securities, X, Y, or Z, in an uncertain world
@@ -200,18 +212,17 @@ SecuritiesStats = {:A=>[SecurityXMean,SecurityXSDEV],
 # Return the portfolio with the highest standard deviation
 
 LowestReturn = SecuritiesStats.sort {|a,b| a[1][0] <=> b[1][0]}.first[0]
+HighestReturn = SecuritiesStats.sort {|a,b| a[1][0] <=> b[1][0]}.last[0]
+
 PortfoliosSortedByRiskASC = SecuritiesStats.sort {|a,b| a[1][1] <=> b[1][1]}
 
 HighestRisk = PortfoliosSortedByRiskASC.last[0]
 
-# check if the portfolio with the highest risk is unique. If not, we may need
-# to look at which, among the riskiest portfolios, has the highest return
+# The securities are in the same order in terms of increasing risk and increasing return so
+# without doing further analysis (i.e., determining risk to return tradeoff) one cannot
+# eliminate one of the securities right off the bat.
 
-if PortfoliosSortedByRiskASC[1][1][1] != PortfoliosSortedByRiskASC.last[1][1]
-  answers << HighestRisk
-else
-  answers << "None of the securities"
-end
+answers << "None of the securities"
 
 # Question 9 (15 points) You have just taken over as a fund manager at a
 # brokerage firm. Your assistant, Thomas, is briefing you on the current

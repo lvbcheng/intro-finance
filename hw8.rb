@@ -113,10 +113,9 @@ PortfolioIV  = [0.15,  0.70, 0.15]
 Xmean     = economy5.zip(Xgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
 Ymean     = economy5.zip(Ygrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
 Zmean     = economy5.zip(Zgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
-
-Xvariance = economy5.zip(Xgrowth).inject(0) { |ret, elt| ret = ret + (elt[0] * elt[1] - Xmean)**2 }
-Yvariance = economy5.zip(Ygrowth).inject(0) { |ret, elt| ret = ret + (elt[0] * elt[1] - Ymean)**2 }
-Zvariance = economy5.zip(Zgrowth).inject(0) { |ret, elt| ret = ret + (elt[0] * elt[1] - Zmean)**2 }
+Xvariance = economy5.zip(Xgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Xmean)**2) }
+Yvariance = economy5.zip(Ygrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Ymean)**2) }
+Zvariance = economy5.zip(Zgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Zmean)**2) }
 
 Xsdev     = Xvariance**0.5
 Ysdev     = Yvariance**0.5
@@ -138,29 +137,33 @@ PortfolioIVar = (PortfolioI[0]**2) * Xvariance +
                  (PortfolioI[2]**2) * Zvariance +
   2 * (PortfolioI[0]*PortfolioI[1]) * XYrho * Xsdev * Ysdev +
   2 * (PortfolioI[1]*PortfolioI[2]) * YZrho * Ysdev * Zsdev +
-  2 * (PortfolioI[0]*PortfolioI[2]) * YZrho * Xsdev * Zsdev 
+  2 * (PortfolioI[0]*PortfolioI[2]) * XZrho * Xsdev * Zsdev 
 PortfolioIIVar = (PortfolioII[0]**2) * Xvariance +
                  (PortfolioII[1]**2) * Yvariance +
                  (PortfolioII[2]**2) * Zvariance +
   2 * (PortfolioII[0]*PortfolioII[1]) * XYrho * Xsdev * Ysdev +
   2 * (PortfolioII[1]*PortfolioII[2]) * YZrho * Ysdev * Zsdev +
-  2 * (PortfolioII[0]*PortfolioII[2]) * YZrho * Xsdev * Zsdev 
+  2 * (PortfolioII[0]*PortfolioII[2]) * XZrho * Xsdev * Zsdev 
 PortfolioIIIVar = (PortfolioIII[0]**2) * Xvariance +
                  (PortfolioIII[1]**2) * Yvariance +
                  (PortfolioIII[2]**2) * Zvariance +
   2 * (PortfolioIII[0]*PortfolioIII[1]) * XYrho * Xsdev * Ysdev +
   2 * (PortfolioIII[1]*PortfolioIII[2]) * YZrho * Ysdev * Zsdev +
-  2 * (PortfolioIII[0]*PortfolioIII[2]) * YZrho * Xsdev * Zsdev 
+  2 * (PortfolioIII[0]*PortfolioIII[2]) * XZrho * Xsdev * Zsdev 
 PortfolioIVVar = (PortfolioIV[0]**2) * Xvariance +
                  (PortfolioIV[1]**2) * Yvariance +
                  (PortfolioIV[2]**2) * Zvariance +
   2 * (PortfolioIV[0]*PortfolioIV[1]) * XYrho * Xsdev * Ysdev +
   2 * (PortfolioIV[1]*PortfolioIV[2]) * YZrho * Ysdev * Zsdev +
-  2 * (PortfolioIV[0]*PortfolioIV[2]) * YZrho * Xsdev * Zsdev 
-debugger
-# The variance of a portfolio is equal to the 
+  2 * (PortfolioIV[0]*PortfolioIV[2]) * XZrho * Xsdev * Zsdev 
 
-answers << "Portfolio I"
+PortfolioVars = {:PortfolioI=>PortfolioIVar,:PortfolioII=>PortfolioIIVar,:PortfolioIII=>PortfolioIIIVar,:PortfolioIV=>PortfolioIVVar}
+
+SortedPortfolio = PortfolioVars.sort {|a,b| a[1] <=> b[1]}
+
+answers << PortfolioVars.first[0]
+
+
 
 # Question 6 (10 points) The FTSE 100 is an index of the 100 largest market
 # capitalization stocks traded on the London Stock Exchange. You think that
