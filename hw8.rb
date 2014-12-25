@@ -71,10 +71,11 @@ CCPrice   = 46
 SFShares  = 300
 SFPrice   = 124
 
-TotalBasket = ((SDCShares * SDCPrice) + (CCShares + CCPrice) + (SFShares * SFPrice)).to_f
+TotalBasket = ((SDCShares * SDCPrice) + (CCShares * CCPrice) + (SFShares * SFPrice)).to_f
+
 SFWeight = (100 * (SFShares * SFPrice)/TotalBasket).round(2)
 
-# 52.88%
+# 44.39
 
 answers << SFWeight
 
@@ -84,7 +85,11 @@ answers << SFWeight
 # exchange for an annual premium. As an investor in SNI, you would expect this
 # company's share to have a beta that is: Close to zero.  Positive.  Negative.
 
-answers << "Negative"
+# When the market is doing well, the company pockets the premiums. When the
+# market is doing poorly, it pays out. Therefore, the company is profitable
+# when the market is profitable and therefore has a positive BETA.
+
+answers << "Positive"
 
 # Question 5 (10 points) Suppose there are three securities (X, Y, and Z) to
 # choose from to create your portfolio. Next year the economy will be in an
@@ -174,7 +179,7 @@ answers << PortfolioVars.first[0]
 # off the % sign. For example, if your answer is 13.97% you should enter it as
 # 13.97 NOT 0.14 nor 14) Answer for Question 6
 
-relationsDrop = (100*(50*49).to_f / (100*99)).to_f.round(2)
+relationsDrop = (100*(50*49/2).to_f / (100*99/2)).to_f.round(2)
 
 answers << (100 - relationsDrop)
 
@@ -241,8 +246,113 @@ project = [-2000000000,-2000000000] + [perpPayoff/r_s]
 
 r_project = project.irr
 
-answers << "No. r_s = 12.5% while r_project = #{r_project.round(2)} which implies that the 4B would already be earning 500M so why go into a new industry to earn exactly the same amount of money?"
+answers << "Do not know. r_s = 12.5% while r_project = is also 12.5% meaning it might be a break even proposition. However, we do not know the risk of the new project nor the correlation between this project and the projects the company already has. Therefore, we do not know the answer"
 
+# Extra Question 5: Suppose there are three securities (A,B, and C) to choose
+# from to create your portfolio. Next year the economy will be in an
+# expansion, normal, or recession state with probabilities 0.30, 0.50, and
+# 0.20, respectively. The returns (%) on the securities in these states are as
+# follows: Security A {expansion = +8, normal = +7, recession = +2}; Security
+# B {-1, -1, +5}; Security C {+14, +7, -8}. You are considering 4 potential
+# portfolios of these 3 securities, with the following specific weights on
+# each: Portfolio I (0.20, 0.40, 0.40); Portfolio II (0.34, 0.33, 0.33);
+# Portfolio III (0.50, 0.25, 0.25); Portfolio IV (0.70, 0.15, 0.15); where the
+# numbers in each parentheses are (weight of A, weight of B, weight of
+# C). Which portfolio has the lowest risk?
+
+economy5 = [0.30, 0.50, 0.20]
+
+Agrowth  = [   8,    7,    2]
+Bgrowth  = [  -1,    -1,   5]
+Cgrowth  = [  14,    7,   -8]
+
+PortfolioI   = [0.20,  0.40, 0.40]
+PortfolioII  = [0.34,  0.33, 0.33]
+PortfolioIII = [0.50,  0.25, 0.25]
+PortfolioIV  = [0.70,  0.15, 0.15]
+
+Amean     = economy5.zip(Agrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
+Bmean     = economy5.zip(Bgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
+Cmean     = economy5.zip(Cgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * elt[1] }
+Avariance = economy5.zip(Agrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Amean)**2) }
+Bvariance = economy5.zip(Bgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Bmean)**2) }
+Cvariance = economy5.zip(Cgrowth).inject(0) { |ret, elt| ret = ret + elt[0] * ((elt[1] - Cmean)**2) }
+
+Asdev     = Avariance**0.5
+Bsdev     = Bvariance**0.5
+Csdev     = Cvariance**0.5
+
+ABcov     = economy5.zip(Agrowth.zip(Bgrowth)).inject(0) { |ret, elt| 
+              ret = ret + (elt[0] * (elt[1][0] - Amean) * (elt[1][1] - Bmean)) }
+BCcov     = economy5.zip(Bgrowth.zip(Cgrowth)).inject(0) { |ret, elt| 
+              ret = ret + (elt[0] * (elt[1][0] - Bmean) * (elt[1][1] - Cmean)) }
+ACcov     = economy5.zip(Agrowth.zip(Cgrowth)).inject(0) { |ret, elt| 
+              ret = ret + (elt[0] * (elt[1][0] - Amean) * (elt[1][1] - Cmean)) }
+
+ABrho     = ABcov/(Asdev * Bsdev)
+BCrho     = BCcov/(Bsdev * Csdev)
+ACrho     = ACcov/(Asdev * Csdev)
+
+PortfolioIVar = (PortfolioI[0]**2) * Avariance +
+                 (PortfolioI[1]**2) * Bvariance +
+                 (PortfolioI[2]**2) * Cvariance +
+  2 * (PortfolioI[0]*PortfolioI[1]) * ABrho * Asdev * Bsdev +
+  2 * (PortfolioI[1]*PortfolioI[2]) * BCrho * Bsdev * Csdev +
+  2 * (PortfolioI[0]*PortfolioI[2]) * ACrho * Asdev * Csdev 
+PortfolioIIVar = (PortfolioII[0]**2) * Avariance +
+                 (PortfolioII[1]**2) * Bvariance +
+                 (PortfolioII[2]**2) * Cvariance +
+  2 * (PortfolioII[0]*PortfolioII[1]) * ABrho * Asdev * Bsdev +
+  2 * (PortfolioII[1]*PortfolioII[2]) * BCrho * Bsdev * Csdev +
+  2 * (PortfolioII[0]*PortfolioII[2]) * ACrho * Asdev * Csdev 
+PortfolioIIIVar = (PortfolioIII[0]**2) * Avariance +
+                 (PortfolioIII[1]**2) * Bvariance +
+                 (PortfolioIII[2]**2) * Cvariance +
+  2 * (PortfolioIII[0]*PortfolioIII[1]) * ABrho * Asdev * Bsdev +
+  2 * (PortfolioIII[1]*PortfolioIII[2]) * BCrho * Bsdev * Csdev +
+  2 * (PortfolioIII[0]*PortfolioIII[2]) * ACrho * Asdev * Csdev 
+PortfolioIVVar = (PortfolioIV[0]**2) * Avariance +
+                 (PortfolioIV[1]**2) * Bvariance +
+                 (PortfolioIV[2]**2) * Cvariance +
+  2 * (PortfolioIV[0]*PortfolioIV[1]) * ABrho * Asdev * Bsdev +
+  2 * (PortfolioIV[1]*PortfolioIV[2]) * BCrho * Bsdev * Csdev +
+  2 * (PortfolioIV[0]*PortfolioIV[2]) * ACrho * Asdev * Csdev 
+
+PortfolioVars = {:PortfolioI=>PortfolioIVar,:PortfolioII=>PortfolioIIVar,:PortfolioIII=>PortfolioIIIVar,:PortfolioIV=>PortfolioIVVar}
+
+SortedPortfolio = PortfolioVars.sort {|a,b| a[1] <=> b[1]}
+
+answers << SortedPortfolio.first
+
+
+# Extra Question 6: The PSI-20 is an index of the 20 largest market
+# capitalization stocks traded on the Euronext Lisbon Stock Exchange in
+# Portugal. You think that 20 stocks may not give you enough diversification,
+# so you want to expand that list to the top 60 stocks. By doing this, what is
+# the percentage increase in the UNIQUE relations between any two stocks in
+# your portfolio that you will have to worry about? (Enter the answer with no
+# more nor less than two decimal places, and leave off the % sign. For
+# example, if your answer is 13.97% you should enter it as 13.97 NOT 0.14 nor
+# 14)
+
+baseUniqueRelations = (20*19)/2
+newUniqueRelations  = 60*59/2
+
+percentageIncrease = 100 * (newUniqueRelations - baseUniqueRelations)/baseUniqueRelations.to_f
+
+answers << percentageIncrease.round(2)
+
+# Extra Question 8: Suppose CAPM works, and you know that the expected returns
+# on Walmart and Amazon are estimated to be 12% and 10%, respectively. You
+# have just calculated extremely reliable estimates of the betas of Walmart
+# and Amazon to be 1.30 and 0.90, respectively. Given this data, what is a
+# reasonable estimate of the risk-free rate (the return on a long-term
+# government bond)? (Enter the answer with no more nor less than two decimal
+# places, and leave off the % sign. For example, if your answer is 13.97% you
+# should enter it as 13.97 NOT 0.14 nor 14)
+
+
+answers << 5.50
 
 puts "Answers to HW #8"
 answers.each_with_index {|v,i| puts "Question #{i+1}: #{v}"}

@@ -160,7 +160,7 @@ salesArray      = employees.inject([]) { |h,i| h << i[:sales] }
 puts smartPhoneArray.to_s
 puts salesArray.to_s
 
-answers << smartPhoneArray.correl(salesArray).round(2)
+answers << (100 * smartPhoneArray.correl(salesArray)).round(2)
 
 # Question 7 (10 points) It is well known that investors generally do not like
 # to bear risk. For two otherwise identical corporate bonds, the one with more
@@ -294,48 +294,98 @@ Banker2Salv = [0.4, 0.4]
 
 answers << "Banker 2's MBS has equal expected return and more risk"
 
-# Extra Question 3 (5 points) Suppose your dear old Grandfather approaches you
-# for investment advice. He knows of your great training in finance and
-# statistics and gives the following instructions: "I have lived a long time
-# and through many challenges. But the recent financial upheaval, with its ups
-# and downs, is too much for me to bear. Just pick for me a portfolio with the
-# least risk." Suppose there are portfolios (A, B, and C) to choose from, and
-# next year the economy will be in an expansion, normal, or recession state
-# with probabilities 0.40, 0.40, and 0.20 respectively. The returns (%) on the
-# portfolios in these states are as follows: Portfolio A {expansion = +13,
-# normal = +9, recession = +8.5}; Portfolio B {+10,+9,+5}; Portfolio C
-# {+13,+8,+7.5}. Which investment best fits your grandfather's needs?
+# Extra Question 3: Suppose your dear old Grandfather approaches you for
+# investment advice. He knows of your great training in finance and statistics
+# and gives the following instructions: "Obviously, I want to maximize my
+# returns, but since my life is now quite boring, I also enjoy a good
+# thrill. My first priority is to pick the security with the highest
+# return. After that, pick me the most volatile investment so I can enjoy the
+# thrills of holding risk." Suppose there are three securities (X, Y, and Z)
+# to choose from next year, the economy will be in an expansion, normal, or
+# recession state with probabilities 0.40, 0.20, and 0.40 respectively. The
+# returns (%) on the securitiies in these states are as follows: Security X
+# {expansion = +13, normal = +9, recession = +7}; Security Y,{+15,+15,+2};
+# Security Z {+17,+10,+2.5}. Which investment best fits your grandfather's
+# needs?
 
 # Portfolio A.
 # Portfolio C.
 # Portfolio B.
 
-EconomyE3  = [0.40, 0.40, 0.20]
-PortfolioA = [ 13, 9, 8.5]
-PortfolioB = [ 10, 9, 5.0]
-PortfolioC = [ 13, 8, 7.5]
+EconomyE3  = [0.40, 0.20, 0.40]
+SecurityX = [ 13, 9, 7.0]
+SecurityY = [ 15,15, 2.0]
+SecurityZ = [ 17,10, 2.5]
 
-PortfolioAMean = EconomyE3.zip(PortfolioA).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
-PortfolioBMean = EconomyE3.zip(PortfolioB).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
-PortfolioCMean = EconomyE3.zip(PortfolioC).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+SecurityXMean = EconomyE3.zip(SecurityX).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+SecurityYMean = EconomyE3.zip(SecurityY).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
+SecurityZMean = EconomyE3.zip(SecurityZ).collect { |elt| elt[0] * elt[1] }.inject(0) { |h,i| h = h + i }
 
-PortfolioASDEV = (EconomyE3.zip(PortfolioA).collect { |elt| elt[0] * (elt[1] - PortfolioAMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
-PortfolioBSDEV = (EconomyE3.zip(PortfolioB).collect { |elt| elt[0] * (elt[1] - PortfolioBMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
-PortfolioCSDEV = (EconomyE3.zip(PortfolioC).collect { |elt| elt[0] * (elt[1] - PortfolioCMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+SecurityXSDEV = (EconomyE3.zip(SecurityX).collect { |elt| elt[0] * (elt[1] - SecurityXMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+SecurityYSDEV = (EconomyE3.zip(SecurityY).collect { |elt| elt[0] * (elt[1] - SecurityYMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
+SecurityZSDEV = (EconomyE3.zip(SecurityZ).collect { |elt| elt[0] * (elt[1] - SecurityZMean)**2 }.inject(0) { |h,i| h = h + i })**0.5
 
-puts "Portfolio A: Mean: #{PortfolioAMean.round(2)} SDEV: #{PortfolioASDEV.round(2)} Variance: #{(PortfolioASDEV**2).round(2)}"
-puts "Portfolio B: Mean: #{PortfolioBMean.round(2)} SDEV: #{PortfolioBSDEV.round(2)} Variance: #{(PortfolioBSDEV**2).round(2)}"
-puts "Portfolio C: Mean: #{PortfolioCMean.round(2)} SDEV: #{PortfolioCSDEV.round(2)} Variance: #{(PortfolioCSDEV**2).round(2)}"
-PortfoliosStats = {:A=>[PortfolioAMean,PortfolioASDEV], 
-                   :B=>[PortfolioBMean,PortfolioBSDEV], 
-                   :C=>[PortfolioCMean,PortfolioCSDEV]}
+puts "Security X: Mean: #{SecurityXMean.round(2)} SDEV: #{SecurityXSDEV.round(2)} Variance: #{(SecurityXSDEV**2).round(2)}"
+puts "Security Y: Mean: #{SecurityYMean.round(2)} SDEV: #{SecurityYSDEV.round(2)} Variance: #{(SecurityYSDEV**2).round(2)}"
+puts "Security Z: Mean: #{SecurityZMean.round(2)} SDEV: #{SecurityZSDEV.round(2)} Variance: #{(SecurityZSDEV**2).round(2)}"
+SecuritysStats = {:X=>[SecurityXMean,SecurityXSDEV], 
+                  :Y=>[SecurityYMean,SecurityYSDEV], 
+                  :Z=>[SecurityZMean,SecurityZSDEV]}
 
-# answers << "Portfolio #{Expectations.min[0]}"
+# answers << "Security #{Expectations.min[0]}"
 
 # Sort the portfolios by their SDEV and return the key of the first element
-# (lowest SDEV)
+# (highest SDEV)
 
-answers << PortfoliosStats.sort {|a,b| a[1][1] <=> b[1][1]}.first[0]
+answers << SecuritysStats.sort {|a,b| a[1][1] <=> b[1][1]}.last[0]
+
+# Extra Question 9 (15 points) You have just taken over as a fund manager at a
+# brokerage firm. Your assistant, Thomas, is briefing you on the current
+# portfolio and states "We have too much of our portfolio in Alpha. We should
+# probably move some of those funds into Gamma so we can achieve better
+# diversification." Is he right? [Hint: Feel free to use spreadsheet
+# statistical functions.] Here is the data on all three stocks. Assume, for
+# convenience, that all three securities do not pay dividends. Alpha, Current
+# Price 40; Current Weight 80%; Next Year's Price: Expansion 48, Normal 44,
+# Recession 36; Beta, Current Price 27.50; Current Weight 20%; Next Year's
+# Price: Expansion 27.50, Normal 26, Recession 25; Gamma, Current Price 15;
+# Current Weight 0%; Next Year's Price: Expansion 18, Normal 16.50, Recession
+# 13.50.
+
+Alpha = {:currentPrice=>40.00, :currentWeight=>0.8, :futurePrice=>[48.00,44.00,36.00]}
+Beta  = {:currentPrice=>27.50, :currentWeight=>0.2, :futurePrice=>[27.50,26.00,25.00]}
+Gamma = {:currentPrice=>15.00, :currentWeight=>0.0, :futurePrice=>[18.00,16.50,13.50]}
+
+Alpha[:futurePercentage] = Alpha[:futurePrice].collect { |elt| (elt - Alpha[:currentPrice])*100/Alpha[:currentPrice]}
+Beta[:futurePercentage]  = Beta[:futurePrice].collect { |elt| (elt - Beta[:currentPrice])*100/Beta[:currentPrice]}
+Gamma[:futurePercentage] = Gamma[:futurePrice].collect { |elt| (elt - Gamma[:currentPrice])*100/Gamma[:currentPrice]}
+
+Alpha[:expectedReturn] = Alpha[:futurePercentage].mean
+Beta[:expectedReturn]  = Beta[:futurePercentage].mean
+Gamma[:expectedReturn] = Gamma[:futurePercentage].mean
+
+Alpha[:sdev] = Alpha[:futurePercentage].sdev
+Beta[:sdev]  = Beta[:futurePercentage].sdev
+Gamma[:sdev] = Gamma[:futurePercentage].sdev
+
+correl9 = {:axb=>Alpha[:futurePercentage].correl(Beta[:futurePercentage]),
+           :bxg=>Beta[:futurePercentage].correl(Gamma[:futurePercentage]),
+           :axg=>Alpha[:futurePercentage].correl(Gamma[:futurePercentage])}
+
+debugger
+
+# if they are not perfectly correlated, either positively or negatively, we
+# need to look at the probabilities of the three different futures.
+
+if correl9[:axg] == 1
+  answers << false
+else
+  if correl9[:axg] == -1
+    answers << true
+  else
+    answers << "It depends. correl(axg): #{correl9[:axg]}"
+  end
+end
 
 puts "Answers to HW #7"
 answers.each_with_index {|v,i| puts "Problem #{i+1}: #{v}"}
