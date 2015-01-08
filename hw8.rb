@@ -166,6 +166,19 @@ PortfolioVars = {:PortfolioI=>PortfolioIVar,:PortfolioII=>PortfolioIIVar,:Portfo
 
 SortedPortfolio = PortfolioVars.sort {|a,b| a[1] <=> b[1]}
 
+puts "Xmean: #{Xmean.round(2)}"
+puts "Ymean: #{Ymean.round(2)}"
+puts "Zmean: #{Zmean.round(2)}"
+puts "Xsdev: #{Xsdev.round(2)}"
+puts "Ysdev: #{Ysdev.round(2)}"
+puts "Zsdev: #{Zsdev.round(2)}"
+puts "XYcov: #{XYcov.round(2)}"
+puts "YZcov: #{YZcov.round(2)}"
+puts "XZcov: #{XZcov.round(2)}"
+puts "XYrho: #{XYrho.round(2)}"
+puts "YZrho: #{YZrho.round(2)}"
+puts "XZrho: #{XZrho.round(2)}"
+
 answers << PortfolioVars.first[0]
 
 
