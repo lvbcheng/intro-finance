@@ -212,7 +212,7 @@ cashFlow     = cashFlow.zip(depreciationSchedule).map { |x,y| x + y }
 
 cashFlow[0]   = cashFlow[0] + capex
 cashFlow[4]   = cashFlow[4] + residue
-
+debugger
 answers << "The NPV = #{cashFlow.npv(discountRate).to_f.round(2)}"
 
 # Question 9: (15 points) Starbuck's is considering opening another store in
