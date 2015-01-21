@@ -24,7 +24,17 @@ answers << "Sometimes true"
 # leave off the % sign. For example, if your answer is 13.97% you should enter
 # it as 13.97 NOT 0.14 nor 14) Answer for Question 3
 
-answers << "Not attempted"
+ReL_Moogle  = 0.1225
+Re_Moogle   = 0.1060
+
+DtoE_Google = 0.3
+
+# Find Ra_Google
+
+# Since Google and Moogle are in the same business they have the same Ra
+# Therefore, Ra_Google = Re_Moogle
+
+answers << (Re_Moogle * 100).round(2)
 
 # Question 4 (10 points) Suppose CAPM holds, and the beta of the equity of
 # your company is 2.00. The expected market risk premium (the difference
@@ -36,7 +46,22 @@ answers << "Not attempted"
 # answer is 13.97% you should enter it as 13.97 NOT 0.14 nor 14) Answer for
 # Question 4
 
-answers << "Not attempted"
+Beta_firm = 2
+
+R_free    = 0.03
+R_market  = 0.03 + 0.045
+DE_ratio  = 0.2
+Beta_debt = 0.2
+
+R_debt    = R_free + (R_market - R_free) * Beta_debt
+R_equity  = R_free + (R_market - R_free) * Beta_firm
+
+# Re        = Ra + DE_ratio * (Ra - R_debt)
+# Re + DE_ratio * R_debt = (1 + DE_ratio) *Ra
+
+Ra        = (R_equity + DE_ratio * R_debt) / (1 + DE_ratio)
+
+answers << (Ra * 100).to_f.round(2)
 
 # Question 5 (10 points) You are planning on opening a consulting firm. You
 # have projected yearly cash flows of $2 million starting next year (t = 1)
@@ -57,7 +82,8 @@ answers << "Not attempted"
 # 20060181.
 # Do not have enough information to value.
 
-answers << "Not attempted"
+# We do not have Beta of the Debt so...
+answers << "Do not have enough information to value"
 
 # Question 6 (10 points) Your firm has been plodding along without much
 # attention from the stock market; both analysts and investors are not showing
@@ -69,7 +95,7 @@ answers << "Not attempted"
 # True.
 # Partly true; partly false.
 
-answers << false
+answers << "Partly true; partly false"
 
 # Question 7 (10 points) Two firms, Alpha, Inc., and Beta, Inc., are in the
 # same business. Alpha, Inc., has debt that is viewed by the market as
@@ -81,7 +107,29 @@ answers << false
 # than two decimal places, and leave off the % sign. For example, if your
 # answer is 13.97% you should enter it as 13.97 NOT 0.14 nor 14)
 
-answers << "Not attempted"
+A_debt = 5e8
+B_debt = 0
+R_free = 0.05
+A_yield    = 1e8
+B_yield    = 1e8
+
+# Valuation of both companies must be identical since they return the same
+# cashflow
+
+A_valuation = 1e9
+B_valuation = 1e9
+
+Ra_B       = (B_yield/ B_valuation).to_f.round(2)
+
+A_payments = A_debt * R_free
+
+Rd_A       = R_free
+
+Ra_A       = Ra_B
+D_to_E     = A_debt/ (A_valuation - A_debt)
+Re_A       = Ra_A + (D_to_E) * (Ra_A - Rd_A)
+
+answers << (Re_A * 100).round(2)
 
 # Question 8 (10 points) Mango, Inc. has had debt with market value of $1
 # million that has paid a 6% coupon and has had an expiration date that is
@@ -93,7 +141,20 @@ answers << "Not attempted"
 # Assume there are no taxes. (Enter just the number without the $ sign or a
 # comma; round to the nearest whole dollar.)
 
-answers << "Not attempted"
+debtPmt_Mango  = 1e6 * 0.06
+
+earnings_Mango = 2e6
+
+Re_Mango = 0.2
+
+# Earnings do not change despite restructuring of debt because
+# debt does not change earnings since it is BEFORE interest and taxes
+
+earnings_post_restructure_Mango = earnings_Mango
+
+Mango_Val = earnings_post_restructure_Mango / 0.2
+
+answers << Mango_Val.to_f.round(2)
 
 # Question 9 (15 points) Suppose all investors are risk-averse and hold
 # diversified portfolios. You are evaluating a new drug company that is going
@@ -110,7 +171,7 @@ answers << "Not attempted"
 # R>S.
 # 
 
-answers << "Not attempted"
+answers << "S>R"
 
 # Question 10 (15 points) NorthSouth Airlines has been granted permission to
 # fly passengers between major U.S. cities. The new company faces competition
@@ -126,12 +187,45 @@ answers << "Not attempted"
 # two decimal places, and leave off the % sign. For example, if your answer is
 # 13.97% you should enter it as 13.97 NOT 0.14 nor 14)
 
-answers << "Not attempted"
+Beta_A = 2.25
+Beta_B = 2.50
+Beta_C = 2.75
+Beta_D = 3.00
+
+DE_A   = 0.21
+DE_B   = 0.42
+DE_C   = 0.63
+DE_D   = 0.83
+tax_rate = 0
+
+Rd_A = Rd_B = Rd_C = Rd_D = 0.07
+R_f       = 0.03
+R_mf      = 0.05
+
+BetaU_A    = Beta_A/(1 + ((1 - tax_rate) * DE_A))
+BetaU_B    = Beta_B/(1 + ((1 - tax_rate) * DE_B))
+BetaU_C    = Beta_C/(1 + ((1 - tax_rate) * DE_C))
+BetaU_D    = Beta_D/(1 + ((1 - tax_rate) * DE_D))
+
+Re_A      = R_f + R_mf * BetaU_A
+Re_B      = R_f + R_mf * BetaU_B
+Re_C      = R_f + R_mf * BetaU_C
+Re_D      = R_f + R_mf * BetaU_D
+
+Ra_A      = (Re_A + DE_A * Rd_A) / (1 + DE_A)
+Ra_B      = (Re_B + DE_B * Rd_B) / (1 + DE_B)
+Ra_C      = (Re_C + DE_C * Rd_C) / (1 + DE_C)
+Ra_D      = (Re_D + DE_D * Rd_D) / (1 + DE_D)
+
+Re_NS     = (Re_A + Re_B + Re_C + Re_D) / 4 
+Ra_NS     = (Ra_A + Ra_B + Ra_C + Ra_D) / 4 
+
+answers << (100 * Ra_NS).to_f.round(2)
 
 puts "Answers to HW #9"
 answers.each_with_index {|v,i| puts "Question #{i+1}: #{v}"}
 
 
 # Equations worth knowing
-# Re(Alpha) = Ra(Alpha) + (D/E)(Ra(Alpha)  Rd(Alpha)) 
+# Re(Alpha) = Ra(Alpha) + (D/E)(Ra(Alpha) -  Rd(Alpha)) 
 
